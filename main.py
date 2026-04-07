@@ -862,7 +862,7 @@ class CaptureStagePage(QWidget):
         super().__init__()
         self.theme = theme
         self.qr_val = qr_val
-        self.views = ["front", "back", "top", "left", "right", "bottom"]
+        self.views = ["top", "bottom", "front", "right", "back", "left"]
         self.view_labels = {}
         self.delete_btns = {}
         self.captured_views = {v: False for v in self.views}
@@ -1029,7 +1029,7 @@ class CaptureStagePage(QWidget):
         view_name = self.get_next_view()
         if not view_name: return
 
-        if view_name in ("front", "back"):
+        if view_name in ("top", "bottom"):
             target_thread = getattr(self, 'camera_thread_left', None)
             cam_label = "Camera 1"
         else:
