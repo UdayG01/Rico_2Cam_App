@@ -30,7 +30,7 @@ USE_CAMERA_FOR_QR = False  # Set to 'False' for USB Hardware Scanners. 'True' fo
 ## 🛠️ Developer Environment Requirements
 If you are developing or modifying the codebase, you must first pull the repository and synchronize the dependencies:
 - Python 3.10+
-- `uv` (highly recommended environment manager) or `pip`
+- `uv` (highly recommended environment manager) or `pip` (install with `pip install uv`)
 
 **Setup & Running with `uv`:**
 ```bash
