@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QPropertyAnimation, QEasingCurve, QTimer, QVariantAnimation
 from PyQt6.QtGui import QImage, QPixmap, QIcon, QPainter, QColor, QPen, QBrush
 import auth
+
 # --- Developer Settings ---
 USE_CAMERA_FOR_QR = False  # Set to False to use a physical barcode scanner (keyboard input)
 
@@ -377,7 +378,9 @@ class CameraThread(QThread):
 
     def run(self):
         try:
+            # Open the camera using Media Foundation
             cap = cv2.VideoCapture(self.camera_index, cv2.CAP_MSMF)
+            
             while self._run_flag:
                 ret, frame = cap.read()
                 if not ret or frame is None or frame.size == 0:
@@ -420,7 +423,6 @@ class CameraThread(QThread):
 
     def stop(self):
         self._run_flag = False
-        # self.wait() # Removed to prevent UI blocking during async tear-down
 
 # --- Login Page ---
 class LoginPage(QWidget):
@@ -976,16 +978,6 @@ class CaptureStagePage(QWidget):
         self.update_capture_button()
 
     def start_cameras(self):
-        self.camera_thread_left = CameraThread(0)
-        self.camera_thread_left.change_pixmap_signal.connect(self.update_left_image)
-        self.camera_thread_left.start()
-
-    def camera_thread_right_init(self):
-        self.camera_thread_right = CameraThread(1)
-        self.camera_thread_right.change_pixmap_signal.connect(self.update_right_image)
-        self.camera_thread_right.start()
-
-    def start_cameras(self):
         self.left_video_label.clear()
         self.left_video_label.setText("Initializing Camera 1...")
         self.camera_thread_left = CameraThread(0)
@@ -1085,7 +1077,7 @@ class QRApp(QMainWindow):
         super().__init__()
         self.theme = theme
         self.setWindowTitle("Renata x Rico 2CamInput")
-        self.setFixedSize(1100, 800)
+        self.showMaximized()
         self.setStyleSheet(THEMES[self.theme]['stylesheet'])
 
         self.stacked_widget = FadingStackedWidget()
@@ -1182,6 +1174,15 @@ class QRApp(QMainWindow):
             del self.qr_scan_page
 
         self.show_qr_scan()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_F11:
+            if self.isFullScreen():
+                self.showNormal()
+                self.showMaximized()
+            else:
+                self.showFullScreen()
+        super().keyPressEvent(event)
 
     def closeEvent(self, event):
         if hasattr(self, 'qr_scan_page'):
