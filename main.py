@@ -380,6 +380,12 @@ class CameraThread(QThread):
         try:
             # Open the camera using Media Foundation
             cap = cv2.VideoCapture(self.camera_index, cv2.CAP_MSMF)
+
+             # --- ADD THESE TWO LINES ---
+            # Force 1080p Resolution 
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+            # ---------------------------
             
             while self._run_flag:
                 ret, frame = cap.read()
